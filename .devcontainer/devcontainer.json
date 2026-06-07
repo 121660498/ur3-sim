@@ -1,0 +1,41 @@
+{
+    "name": "ROS Noetic GPU Dev",
+    // 使用你之前构建好的镜像名
+    // "image": "ros-noetic-base",
+    "image": "class-ros1-ur:v1",
+
+    // 运行参数：相当于 docker run 的参数
+    "runArgs": [
+        "--gpus=all",
+        "--net=host",
+        "--privileged"
+    ],
+
+    // 环境变量：设置 GUI 显示和显卡能力
+    "containerEnv": {
+        "DISPLAY": "10.7.1.150:0.0", // 记得根据你的 Windows IP 随时修改
+        "NVIDIA_DRIVER_CAPABILITIES": "all",
+        "QT_X11_NO_MITSHM": "1"
+    },
+
+    // 挂载：VS Code 默认会自动挂载当前项目文件夹到 /workspaces/项目名
+    // 如果你有额外的路径需要挂载，可以在这里添加
+
+    // 容器内安装的 VS Code 插件（推荐安装 C++ 和 ROS 相关插件）
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-python.python",
+                "ms-iot.vscode-ros",
+                "redhat.vscode-xml"
+            ]
+        }
+    },
+
+    // 容器启动后执行的命令
+    // "postCreateCommand": "rosdepc update",
+
+    // 以 root 用户运行（或者你可以设置为你 Dockerfile 里的用户）
+    "remoteUser": "root"
+}

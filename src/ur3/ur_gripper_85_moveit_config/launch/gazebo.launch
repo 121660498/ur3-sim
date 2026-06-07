@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="paused" default="false"/>
+  <arg name="gazebo_gui" default="true"/>
+  <arg name="urdf_path" default="$(find ur_gripper_gazebo)/urdf/ur_gripper_hande.xacro"/>
+  <arg name="ur_robot" default="ur3"/>
+  <arg name="grasp_plugin" default="false"/>
+
+  <arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+  <arg name="safety_limits" default="false"/>
+  <arg name="safety_pos_margin" default="0.15"/>
+  <arg name="safety_k_position" default="20"/>
+
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="worlds/empty.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
+  </include>
+
+  <param name="use_gazebo_sim" type="bool" value="true" />
+  <param name="grasp_plugin" type="bool" value="$(arg grasp_plugin)"/>
+
+  <!-- send robot urdf to param server with full xacro preprocessing -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(arg urdf_path)'
+    joint_limit_params:='$(find ur_description)/config/$(arg ur_robot)/joint_limits.yaml'
+    kinematics_params:='$(find ur_description)/config/$(arg ur_robot)/default_kinematics.yaml'
+    physical_params:='$(find ur_description)/config/$(arg ur_robot)/physical_parameters.yaml'
+    visual_params:='$(find ur_description)/config/$(arg ur_robot)/visual_parameters.yaml'
+    transmission_hw_interface:=$(arg transmission_hw_interface)
+    safety_limits:=$(arg safety_limits)
+    safety_pos_margin:=$(arg safety_pos_margin)
+    safety_k_position:=$(arg safety_k_position)
+    grasp_plugin:=$(arg grasp_plugin)" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo at the origin -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0 -y 0 -z 0"
+    respawn="false" output="screen" />
+
+  <include file="$(find ur_gripper_85_moveit_config)/launch/ros_controllers.launch"/>
+
+</launch>
