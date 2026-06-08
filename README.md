@@ -19,7 +19,7 @@ docker login ghcr.io -u 你的GitHub用户名 -p 你的GitHub_Token
 **拉取镜像**
 
 ```powershell
-docker pull ghcr.io/121660498/ur3-sim-image:26.6.8
+docker pull ghcr.io/121660498/ur3-sim-image:latest
 ```
 
 镜像体积较大，拉取时间取决于网速，请耐心等待。
