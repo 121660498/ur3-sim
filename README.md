@@ -2,6 +2,47 @@
 
 > 本文档从零开始，完整说明如何在 Windows 宿主机 + Docker 容器环境下运行 UR3 Z 轴阻抗控制演示程序。
 
+## 第零步：拉取 Docker 镜像
+
+项目已提供预配置好的 Docker 镜像（包含 ROS Noetic、Gazebo、MoveIt! 及所有依赖），无需手动安装环境，直接拉取即可使用。
+
+在 Windows 的 PowerShell 中执行：
+
+**登录 GitHub Container Registry**
+
+```powershell
+docker login ghcr.io -u 你的GitHub用户名 -p 你的GitHub_Token
+```
+
+> Token 需要有 `read:packages` 权限，生成方式见 [GitHub Token 设置页](https://github.com/settings/tokens)。
+
+**拉取镜像**
+
+```powershell
+docker pull ghcr.io/121660498/ur3-sim-image:26.6.8
+```
+
+镜像体积较大，拉取时间取决于网速，请耐心等待。
+
+**修改 devcontainer.json 使用此镜像**
+
+拉取完成后，打开项目根目录下的 `.devcontainer/devcontainer.json`，将 `image` 字段改为：
+
+```json
+"image": "ghcr.io/121660498/ur3-sim-image:26.6.8"
+```
+
+修改前后对比：
+
+```json
+// 修改前（使用本地构建的镜像）
+"image": "class-ros1-ur:v1"
+
+// 修改后（使用从 GHCR 拉取的镜像）
+"image": "ghcr.io/121660498/ur3-sim-image:26.6.8"
+```
+
+完成后继续执行第一步。
 ---
 
 ## 第一步：修改 devcontainer 的显示 IP
